@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390, initial-scale=1.0">
+  <title>TRAIL QUEST WORLD - ショップ</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    /* ============================================
+       Shop Screen
+       ============================================ */
+    .shop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .shop-header__title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .shop-header__balance {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 215, 0, 0.08);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .shop-header__balance img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .shop-header__balance-value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--gold);
+    }
+
+    /* Shop Tabs */
+    .shop-tabs {
+      margin-top: 12px;
+    }
+
+    /* Shop Grid */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+      flex: 1;
+      align-content: start;
+    }
+
+    .shop-item {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 40, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .shop-item:active { transform: scale(0.97); }
+
+    .shop-item__preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #1a1f3a, #0f1428);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+
+    .shop-item__preview--bg {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .shop-item__badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+
+    .shop-item__info {
+      padding: 10px;
+    }
+
+    .shop-item__name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .shop-item__price {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .shop-item__price img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .shop-item__price-value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--gold);
+    }
+
+    /* Owned / Equipped states */
+    .shop-item__action {
+      margin-top: 6px;
+    }
+
+    .shop-item__action-btn {
+      width: 100%;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-main);
+    }
+
+    .shop-item__action-btn--equip {
+      background: rgba(255, 215, 0, 0.1);
+      color: var(--gold);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .shop-item__action-btn--equipped {
+      background: rgba(39, 174, 96, 0.15);
+      color: var(--green-bright);
+      border: 1px solid rgba(39, 174, 96, 0.3);
+    }
+
+    .shop-item__action-btn--buy {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1000;
+    }
+
+    /* Locked item */
+    .shop-item--locked {
+      opacity: 0.5;
+      position: relative;
+    }
+
+    .shop-item--locked .shop-item__preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 26, 0.6);
+      backdrop-filter: blur(3px);
+    }
+
+    .shop-item__lock-icon {
+      position: absolute;
+      z-index: 2;
+      width: 32px;
+      height: 32px;
+    }
+
+    .shop-item__lock-text {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="home.html">Home</a>
+    <a href="deck-select.html">Deck</a>
+    <a href="deck-phase.html">Phase</a>
+    <a href="battle.html">Battle</a>
+    <a href="quest.html">Quest</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="ranking.html">Rank</a>
+  </nav>
+
+  <div class="mobile-frame">
+    <div class="bg-layer" style="background: linear-gradient(180deg, #0a0e1a, #0f1428, #0a0e1a);"></div>
+
+    <div class="content">
+      <!-- Header -->
+      <div class="shop-header animate-fadeInUp">
+        <div class="shop-header__title">ショップ</div>
+        <div class="shop-header__balance">
+          <img src="assets/icons/icon-coin.png" alt="ALT">
+          <span class="shop-header__balance-value">2,450</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar shop-tabs animate-fadeInUp delay-1">
+        <span class="tab-item tab-item--active">アバター</span>
+        <span class="tab-item">背景</span>
+        <span class="tab-item">カード枠</span>
+        <span class="tab-item">エフェクト</span>
+      </div>
+
+      <div class="divider divider--sm"></div>
+
+      <!-- Shop Grid -->
+      <div class="shop-grid">
+        <!-- Item 1: Equipped -->
+        <div class="shop-item animate-fadeInUp delay-2">
+          <div class="shop-item__preview">🧙</div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">魔法使い</div>
+            <div class="shop-item__action">
+              <button class="shop-item__action-btn shop-item__action-btn--equipped">使用中</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Owned -->
+        <div class="shop-item animate-fadeInUp delay-2">
+          <div class="shop-item__preview">⚔️</div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">剣士</div>
+            <div class="shop-item__action">
+              <button class="shop-item__action-btn shop-item__action-btn--equip">使用する</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: For sale -->
+        <div class="shop-item animate-fadeInUp delay-3">
+          <div class="shop-item__preview">
+            🐉
+            <span class="shop-item__badge">
+              <span class="badge badge--gold">NEW</span>
+            </span>
+          </div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">ドラゴンライダー</div>
+            <div class="shop-item__price">
+              <img src="assets/icons/icon-coin.png" alt="ALT">
+              <span class="shop-item__price-value">800</span>
+            </div>
+            <div class="shop-item__action">
+              <button class="shop-item__action-btn shop-item__action-btn--buy">購入する</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: For sale -->
+        <div class="shop-item animate-fadeInUp delay-3">
+          <div class="shop-item__preview">👑</div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">王族</div>
+            <div class="shop-item__price">
+              <img src="assets/icons/icon-coin.png" alt="ALT">
+              <span class="shop-item__price-value">1,200</span>
+            </div>
+            <div class="shop-item__action">
+              <button class="shop-item__action-btn shop-item__action-btn--buy">購入する</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5: Locked -->
+        <div class="shop-item shop-item--locked animate-fadeInUp delay-4">
+          <div class="shop-item__preview">
+            🌟
+            <img src="assets/icons/icon-lock.png" alt="" class="shop-item__lock-icon">
+          </div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">星の守護者</div>
+            <div class="shop-item__lock-text">ランク「プラチナ」で解放</div>
+          </div>
+        </div>
+
+        <!-- Item 6: Locked -->
+        <div class="shop-item shop-item--locked animate-fadeInUp delay-4">
+          <div class="shop-item__preview">
+            🔮
+            <img src="assets/icons/icon-lock.png" alt="" class="shop-item__lock-icon">
+          </div>
+          <div class="shop-item__info">
+            <div class="shop-item__name">預言者</div>
+            <div class="shop-item__lock-text">Lv.30で解放</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-home.svg" alt="">
+        <span>ホーム</span>
+      </a>
+      <a href="deck-select.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-battle.svg" alt="">
+        <span>バトル</span>
+      </a>
+      <a href="shop.html" class="bottom-nav__item bottom-nav__item--active">
+        <img src="assets/icons/nav-shop.svg" alt="">
+        <span>ショップ</span>
+      </a>
+      <a href="#" class="bottom-nav__item">
+        <img src="assets/icons/nav-settings.svg" alt="">
+        <span>設定</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

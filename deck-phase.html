@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390, initial-scale=1.0">
+  <title>TRAIL QUEST WORLD - デッキフェイズ</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    /* ============================================
+       Deck Phase Screen
+       ============================================ */
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .phase-header__back {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .phase-header__info {
+      flex: 1;
+    }
+
+    .phase-header__title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .phase-header__subtitle {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .phase-header__reroll {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      color: var(--gold);
+      font-family: var(--font-display);
+    }
+
+    .phase-header__reroll-count {
+      font-weight: 900;
+      font-size: 0.9rem;
+    }
+
+    /* Section Title */
+    .phase-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin: 12px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phase-section-title__count {
+      font-family: var(--font-display);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* Offered Cards Grid (3x3) */
+    .offered-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .phase-card {
+      position: relative;
+      aspect-ratio: 5/7;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      text-align: center;
+    }
+
+    .phase-card:active { transform: scale(0.95); }
+
+    .phase-card--selected {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      transform: scale(1.03);
+    }
+
+    /* Rarity-based card styles */
+    .phase-card--n {
+      background: linear-gradient(135deg, #2a2f4a, #1e2340);
+      border: 2px solid var(--rarity-n);
+    }
+
+    .phase-card--r {
+      background: linear-gradient(135deg, #1a2a4a, #152040);
+      border: 2px solid var(--rarity-r);
+    }
+
+    .phase-card--sr {
+      background: linear-gradient(135deg, #2a1a3a, #201530);
+      border: 2px solid var(--rarity-sr);
+      box-shadow: 0 2px 10px rgba(155, 89, 182, 0.2);
+    }
+
+    .phase-card--ssr {
+      background: linear-gradient(135deg, #2a2020, #201a10);
+      border: 2px solid var(--gold);
+      box-shadow: 0 2px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .phase-card--ssr::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b6b, #ffd700, #48dbfb, #ff6b6b);
+      background-size: 300% 300%;
+      z-index: -1;
+      animation: rainbow-border 3s linear infinite;
+    }
+
+    .phase-card__rarity {
+      font-size: 0.55rem;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+    }
+
+    .phase-card__rarity--n { background: rgba(176,176,192,0.2); color: var(--rarity-n); }
+    .phase-card__rarity--r { background: rgba(74,144,217,0.2); color: var(--rarity-r); }
+    .phase-card__rarity--sr { background: rgba(155,89,182,0.2); color: var(--rarity-sr); }
+    .phase-card__rarity--ssr { background: rgba(255,215,0,0.2); color: var(--gold); }
+
+    .phase-card__icon {
+      font-size: 1.4rem;
+      margin: 4px 0;
+    }
+
+    .phase-card__name {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .phase-card__stat {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Current Deck */
+    .current-deck {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0;
+      scrollbar-width: none;
+    }
+
+    .current-deck::-webkit-scrollbar { display: none; }
+
+    .current-deck__card {
+      flex-shrink: 0;
+      width: 52px;
+      height: 72px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-weight: 700;
+      gap: 2px;
+    }
+
+    .current-deck__card--n {
+      background: rgba(176,176,192,0.1);
+      border: 1px solid rgba(176,176,192,0.3);
+    }
+
+    .current-deck__card--r {
+      background: rgba(74,144,217,0.1);
+      border: 1px solid rgba(74,144,217,0.3);
+    }
+
+    .current-deck__card--sr {
+      background: rgba(155,89,182,0.1);
+      border: 1px solid rgba(155,89,182,0.3);
+    }
+
+    .current-deck__card-icon { font-size: 1rem; }
+
+    /* Bottom Fixed Actions */
+    .phase-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      padding-top: 12px;
+    }
+
+    .phase-actions .btn { flex: 1; }
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="home.html">Home</a>
+    <a href="deck-select.html">Deck</a>
+    <a href="deck-phase.html" class="active">Phase</a>
+    <a href="battle.html">Battle</a>
+    <a href="quest.html">Quest</a>
+    <a href="shop.html">Shop</a>
+    <a href="ranking.html">Rank</a>
+  </nav>
+
+  <div class="mobile-frame">
+    <div class="bg-layer" style="background: linear-gradient(180deg, #0a0e1a, #0f1428, #0a0e1a);"></div>
+
+    <div class="content content--no-pad-bottom" style="padding-bottom: 16px;">
+      <!-- Header -->
+      <div class="phase-header animate-fadeInUp">
+        <a href="deck-select.html" class="phase-header__back">‹</a>
+        <div class="phase-header__info">
+          <div class="phase-header__title">デッキフェイズ</div>
+          <div class="phase-header__subtitle">カードを選んでデッキを構築</div>
+        </div>
+        <div class="phase-header__reroll">
+          引き直し <span class="phase-header__reroll-count">2</span>/3
+        </div>
+      </div>
+
+      <div class="divider divider--sm"></div>
+
+      <!-- Offered Cards Section -->
+      <div class="phase-section-title">
+        提示カード <span class="phase-section-title__count">9枚</span>
+      </div>
+
+      <div class="offered-cards">
+        <!-- Row 1 -->
+        <div class="phase-card phase-card--n animate-fadeInUp delay-1">
+          <span class="phase-card__rarity phase-card__rarity--n">N</span>
+          <span class="phase-card__icon">🗻</span>
+          <span class="phase-card__name">富士山</span>
+          <span class="phase-card__stat">ATK 3 / DEF 2</span>
+        </div>
+        <div class="phase-card phase-card--r phase-card--selected animate-fadeInUp delay-1">
+          <span class="phase-card__rarity phase-card__rarity--r">R</span>
+          <span class="phase-card__icon">🌊</span>
+          <span class="phase-card__name">太平洋</span>
+          <span class="phase-card__stat">ATK 5 / DEF 3</span>
+        </div>
+        <div class="phase-card phase-card--n animate-fadeInUp delay-1">
+          <span class="phase-card__rarity phase-card__rarity--n">N</span>
+          <span class="phase-card__icon">🏯</span>
+          <span class="phase-card__name">大阪城</span>
+          <span class="phase-card__stat">ATK 2 / DEF 4</span>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="phase-card phase-card--sr animate-fadeInUp delay-2">
+          <span class="phase-card__rarity phase-card__rarity--sr">SR</span>
+          <span class="phase-card__icon">⚡</span>
+          <span class="phase-card__name">雷神</span>
+          <span class="phase-card__stat">ATK 7 / DEF 4</span>
+        </div>
+        <div class="phase-card phase-card--n animate-fadeInUp delay-2">
+          <span class="phase-card__rarity phase-card__rarity--n">N</span>
+          <span class="phase-card__icon">🌸</span>
+          <span class="phase-card__name">桜前線</span>
+          <span class="phase-card__stat">ATK 2 / DEF 3</span>
+        </div>
+        <div class="phase-card phase-card--r animate-fadeInUp delay-2">
+          <span class="phase-card__rarity phase-card__rarity--r">R</span>
+          <span class="phase-card__icon">🎌</span>
+          <span class="phase-card__name">武士道</span>
+          <span class="phase-card__stat">ATK 4 / DEF 5</span>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="phase-card phase-card--n animate-fadeInUp delay-3">
+          <span class="phase-card__rarity phase-card__rarity--n">N</span>
+          <span class="phase-card__icon">🍣</span>
+          <span class="phase-card__name">寿司</span>
+          <span class="phase-card__stat">ATK 2 / DEF 2</span>
+        </div>
+        <div class="phase-card phase-card--ssr animate-fadeInUp delay-3">
+          <span class="phase-card__rarity phase-card__rarity--ssr">SSR</span>
+          <span class="phase-card__icon">🐉</span>
+          <span class="phase-card__name">龍神</span>
+          <span class="phase-card__stat">ATK 9 / DEF 7</span>
+        </div>
+        <div class="phase-card phase-card--r animate-fadeInUp delay-3">
+          <span class="phase-card__rarity phase-card__rarity--r">R</span>
+          <span class="phase-card__icon">🗼</span>
+          <span class="phase-card__name">東京タワー</span>
+          <span class="phase-card__stat">ATK 4 / DEF 4</span>
+        </div>
+      </div>
+
+      <!-- Current Deck -->
+      <div class="phase-section-title">
+        現在のデッキ <span class="phase-section-title__count">5</span>/9
+      </div>
+
+      <div class="current-deck">
+        <div class="current-deck__card current-deck__card--r">
+          <span class="current-deck__card-icon">🌊</span>
+          <span>太平洋</span>
+        </div>
+        <div class="current-deck__card current-deck__card--sr">
+          <span class="current-deck__card-icon">⚡</span>
+          <span>雷神</span>
+        </div>
+        <div class="current-deck__card current-deck__card--n">
+          <span class="current-deck__card-icon">🗻</span>
+          <span>富士山</span>
+        </div>
+        <div class="current-deck__card current-deck__card--n">
+          <span class="current-deck__card-icon">🌸</span>
+          <span>桜前線</span>
+        </div>
+        <div class="current-deck__card current-deck__card--r">
+          <span class="current-deck__card-icon">🎌</span>
+          <span>武士道</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="phase-actions">
+        <button class="btn btn-ghost">引き直す</button>
+        <a href="battle.html" class="btn btn-battle">バトル開始</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -6,478 +6,386 @@
   <title>TRAIL QUEST WORLD - ホーム</title>
   <link rel="stylesheet" href="css/common.css">
   <style>
-    /* ===== Home Screen Specific ===== */
-    body {
-      background: var(--bg-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
-
-    .mobile-frame {
-      background: var(--bg-dark);
-    }
-
-    /* Header */
-    .header {
+    /* ============================================
+       Home Screen Specific Styles
+       ============================================ */
+    .home-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 8px;
+      padding: 8px 0;
     }
 
-    .logo-area {
-      display: flex;
-      flex-direction: column;
+    .home-header__logo {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      opacity: 0.8;
     }
 
-    .logo-area .title-game {
-      font-size: 1.1rem;
-    }
-
-    .logo-area .subtitle {
-      font-size: 0.6rem;
-      margin-top: 2px;
-    }
-
-    .settings-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(197, 160, 63, 0.3);
-      color: var(--text-gray);
-      font-size: 1rem;
+    .home-header__alt {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 215, 0, 0.08);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 215, 0, 0.15);
     }
 
-    /* Player Info */
+    .home-header__alt img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .home-header__alt-value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--gold);
+    }
+
+    /* Player Card */
     .player-card {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 4px;
+      padding: 14px 16px;
+      margin-top: 12px;
     }
 
-    .avatar-ring {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      padding: 2px;
-      box-shadow: var(--glow-gold);
+    .player-card__avatar-wrap {
+      position: relative;
       flex-shrink: 0;
     }
 
-    .avatar-ring .avatar {
-      width: 100%;
-      height: 100%;
+    .player-card__avatar {
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2a3060, #1a2040);
+      border: 2px solid var(--gold-dark);
+      background: linear-gradient(135deg, #2a2f4a, #1a1f3a);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
     }
 
-    .player-info {
-      flex: 1;
-    }
-
-    .player-name {
-      font-size: 1rem;
+    .player-card__level {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1000;
+      font-size: 0.6rem;
       font-weight: 900;
-      color: var(--text-white);
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-display);
     }
 
-    .player-level {
+    .player-card__info { flex: 1; min-width: 0; }
+
+    .player-card__name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .player-card__rank {
       font-size: 0.7rem;
       color: var(--gold);
-      margin-top: 2px;
+      font-weight: 500;
     }
 
-    .exp-bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+    .player-card__stats {
+      display: flex;
+      gap: 12px;
       margin-top: 6px;
-      overflow: hidden;
     }
 
-    .exp-fill {
-      width: 65%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
-      border-radius: 2px;
+    .player-card__stat {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
     }
 
-    .alt-badge {
-      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-      color: #1a1000;
-      font-size: 0.65rem;
-      font-weight: 900;
-      padding: 4px 10px;
-      border-radius: 20px;
-      text-align: center;
-      white-space: nowrap;
+    .player-card__stat-value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
-    .alt-badge .alt-value {
-      font-size: 0.85rem;
-    }
-
-    /* Main Buttons */
-    .main-actions {
+    /* Main Action Cards */
+    .home-actions {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 20px;
+      flex: 1;
+      justify-content: center;
     }
 
-    .action-btn {
+    .action-card {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 18px 20px;
-      border-radius: 16px;
-      border: none;
-      cursor: pointer;
+      gap: 16px;
+      padding: 20px;
+      border-radius: var(--radius);
       position: relative;
       overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--transition-fast);
       text-decoration: none;
-      transition: all 0.3s ease;
     }
 
-    .action-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 16px;
-      border: 2px solid var(--gold-dark);
-      pointer-events: none;
+    .action-card:active { transform: scale(0.98); }
+
+    .action-card--battle {
+      background: linear-gradient(135deg, rgba(192, 57, 43, 0.85), rgba(139, 26, 26, 0.9));
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      box-shadow: 0 4px 20px rgba(192, 57, 43, 0.3), 0 0 15px rgba(255, 215, 0, 0.1);
     }
 
-    .action-btn::after {
+    .action-card--quest {
+      background: linear-gradient(135deg, rgba(41, 128, 185, 0.85), rgba(26, 82, 118, 0.9));
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      box-shadow: 0 4px 20px rgba(41, 128, 185, 0.3), 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+
+    .action-card__icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+    }
+
+    .action-card__text { flex: 1; }
+
+    .action-card__title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--gold-light);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      margin-bottom: 4px;
+    }
+
+    .action-card__desc {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .action-card__arrow {
+      font-size: 1.5rem;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+
+    .action-card::after {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
       width: 50%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-      animation: shimmer 3s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: btn-shimmer 4s ease-in-out infinite;
     }
 
-    .action-btn:hover {
-      transform: translateY(-2px);
-    }
+    /* Ranking Preview */
+    .ranking-preview { margin-top: 16px; }
 
-    .btn-battle-main {
-      background: linear-gradient(135deg, #cc1122 0%, #991122 50%, #771122 100%);
-      box-shadow: 0 6px 24px rgba(204, 17, 34, 0.4), 0 0 20px rgba(255, 215, 0, 0.15);
-    }
-
-    .btn-quest-main {
-      background: linear-gradient(135deg, #1a3388 0%, #112266 50%, #0a1844 100%);
-      box-shadow: 0 6px 24px rgba(26, 51, 136, 0.4), 0 0 20px rgba(255, 215, 0, 0.15);
-    }
-
-    .action-icon {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-    }
-
-    .action-text {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .action-title {
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: var(--gold-light);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .action-desc {
-      font-size: 0.65rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: 2px;
-    }
-
-    .action-arrow {
-      margin-left: auto;
-      font-size: 1.2rem;
-      color: var(--gold-dark);
-    }
-
-    /* Ranking */
-    .ranking-section {
-      margin-top: 16px;
-    }
-
-    .section-header {
+    .ranking-preview__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
     }
 
-    .section-title {
+    .ranking-preview__title {
       font-size: 0.85rem;
-      font-weight: 900;
-      color: var(--gold);
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .see-all {
-      font-size: 0.65rem;
-      color: var(--text-gray);
+    .ranking-preview__title img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ranking-preview__link {
+      font-size: 0.7rem;
+      color: var(--gold);
       text-decoration: none;
+      opacity: 0.7;
     }
 
     .ranking-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .rank-item {
+    .ranking-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
-      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(26, 31, 58, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .rank-num {
-      font-size: 1.1rem;
-      font-weight: 900;
+    .ranking-item__avatar {
       width: 28px;
-      text-align: center;
-    }
-
-    .rank-1 { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-    .rank-2 { color: #c0c0c0; }
-    .rank-3 { color: #cd7f32; }
-
-    .rank-avatar {
-      width: 36px;
-      height: 36px;
+      height: 28px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2a3060, #1a2040);
+      background: linear-gradient(135deg, #2a2f4a, #1a1f3a);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
-      border: 1px solid rgba(197, 160, 63, 0.3);
+      font-size: 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .rank-info {
+    .ranking-item__name {
       flex: 1;
-    }
-
-    .rank-name {
       font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .ranking-item__rate {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
       font-weight: 700;
-    }
-
-    .rank-score {
-      font-size: 0.65rem;
-      color: var(--text-gray);
-      margin-top: 1px;
-    }
-
-    .rank-badge {
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 10px;
-      background: rgba(255, 215, 0, 0.1);
       color: var(--gold);
-      border: 1px solid rgba(255, 215, 0, 0.2);
-    }
-
-    /* Bottom Nav */
-    .bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0 20px;
-      background: linear-gradient(180deg, transparent, rgba(10, 14, 26, 0.95));
-      z-index: 10;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      text-decoration: none;
-      color: var(--text-gray);
-      font-size: 0.55rem;
-      transition: color 0.2s;
-    }
-
-    .nav-item.active {
-      color: var(--gold);
-    }
-
-    .nav-icon {
-      font-size: 1.2rem;
-    }
-
-    /* Spacer for content */
-    .content {
-      padding-bottom: 70px;
     }
   </style>
 </head>
 <body>
+  <!-- Dev Navigation -->
+  <nav class="page-nav">
+    <a href="home.html" class="active">Home</a>
+    <a href="deck-select.html">Deck</a>
+    <a href="deck-phase.html">Phase</a>
+    <a href="battle.html">Battle</a>
+    <a href="quest.html">Quest</a>
+    <a href="shop.html">Shop</a>
+    <a href="ranking.html">Rank</a>
+  </nav>
 
-<div class="mobile-frame">
-  <img src="assets/images/bg-home.png" class="bg-image" alt="背景">
-  <div class="bg-overlay"></div>
+  <div class="mobile-frame">
+    <!-- Background -->
+    <img src="assets/backgrounds/bg-home.png" alt="" class="bg-image">
+    <div class="bg-overlay"></div>
 
-  <div class="content">
-    <!-- Header -->
-    <div class="header animate-fadeIn">
-      <div class="logo-area">
-        <div class="title-game">TRAIL QUEST WORLD</div>
-        <div class="subtitle">FANTASY CARD BATTLE</div>
-      </div>
-      <button class="settings-btn">⚙</button>
-    </div>
+    <!-- Content -->
+    <div class="content">
+      <!-- Header -->
+      <header class="home-header animate-fadeInUp">
+        <span class="home-header__logo">TRAIL QUEST WORLD</span>
+        <div class="home-header__alt">
+          <img src="assets/icons/icon-coin.png" alt="ALT">
+          <span class="home-header__alt-value">2,450</span>
+        </div>
+      </header>
 
-    <div class="divider"></div>
-
-    <!-- Player Info -->
-    <div class="player-card card-panel animate-fadeIn" style="animation-delay: 0.1s;">
-      <div class="avatar-ring">
-        <div class="avatar">🐉</div>
-      </div>
-      <div class="player-info">
-        <div class="player-name">竜騎士タクミ</div>
-        <div class="player-level">Lv.42 ・ ランク: ゴールドII</div>
-        <div class="exp-bar">
-          <div class="exp-fill"></div>
+      <!-- Player Card -->
+      <div class="player-card glass-panel animate-fadeInUp delay-1">
+        <div class="player-card__avatar-wrap">
+          <div class="player-card__avatar">🧙</div>
+          <span class="player-card__level">Lv.12</span>
+        </div>
+        <div class="player-card__info">
+          <div class="player-card__name">冒険者タロウ</div>
+          <div class="player-card__rank">ゴールドランク III</div>
+          <div class="player-card__stats">
+            <div class="player-card__stat">
+              勝率 <span class="player-card__stat-value">67%</span>
+            </div>
+            <div class="player-card__stat">
+              Elo <span class="player-card__stat-value">1,520</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="alt-badge">
-        ALT<br>
-        <span class="alt-value">3,280</span>
+
+      <!-- Main Actions -->
+      <div class="home-actions">
+        <a href="deck-select.html" class="action-card action-card--battle animate-fadeInUp delay-2">
+          <img src="assets/icons/icon-sword.png" alt="" class="action-card__icon">
+          <div class="action-card__text">
+            <div class="action-card__title">バトル</div>
+            <div class="action-card__desc">デッキを選んで対戦に挑め</div>
+          </div>
+          <span class="action-card__arrow">›</span>
+        </a>
+
+        <a href="quest.html" class="action-card action-card--quest animate-fadeInUp delay-3">
+          <img src="assets/icons/icon-book.png" alt="" class="action-card__icon">
+          <div class="action-card__text">
+            <div class="action-card__title">デッキクエスト</div>
+            <div class="action-card__desc">学んで新しいカードを獲得</div>
+          </div>
+          <span class="action-card__arrow">›</span>
+        </a>
+      </div>
+
+      <!-- Ranking Preview -->
+      <div class="ranking-preview animate-fadeInUp delay-4">
+        <div class="ranking-preview__header">
+          <div class="ranking-preview__title">
+            <img src="assets/icons/icon-trophy.png" alt="">
+            ランキング TOP3
+          </div>
+          <a href="ranking.html" class="ranking-preview__link">すべて見る ›</a>
+        </div>
+        <div class="ranking-list">
+          <div class="ranking-item">
+            <div class="medal medal--gold">1</div>
+            <div class="ranking-item__avatar">👑</div>
+            <span class="ranking-item__name">マスター太郎</span>
+            <span class="ranking-item__rate">2,180</span>
+          </div>
+          <div class="ranking-item">
+            <div class="medal medal--silver">2</div>
+            <div class="ranking-item__avatar">⚔️</div>
+            <span class="ranking-item__name">クイズ王</span>
+            <span class="ranking-item__rate">2,050</span>
+          </div>
+          <div class="ranking-item">
+            <div class="medal medal--bronze">3</div>
+            <div class="ranking-item__avatar">🎯</div>
+            <span class="ranking-item__name">知識の探求者</span>
+            <span class="ranking-item__rate">1,980</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Main Action Buttons -->
-    <div class="main-actions">
-      <a href="battle-start.html" class="action-btn btn-battle-main animate-fadeIn" style="animation-delay: 0.2s;">
-        <img src="assets/images/icon-sword.png" class="action-icon" alt="バトル">
-        <div class="action-text">
-          <div class="action-title">⚔️ バトル</div>
-          <div class="action-desc">リアルタイム対戦に挑め</div>
-        </div>
-        <div class="action-arrow">›</div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="bottom-nav__item bottom-nav__item--active">
+        <img src="assets/icons/nav-home.svg" alt="">
+        <span>ホーム</span>
       </a>
-
-      <a href="deck-select.html" class="action-btn btn-quest-main animate-fadeIn" style="animation-delay: 0.3s;">
-        <img src="assets/images/icon-book.png" class="action-icon" alt="クエスト">
-        <div class="action-text">
-          <div class="action-title">📖 デッキクエスト</div>
-          <div class="action-desc">デッキを選んで冒険へ</div>
-        </div>
-        <div class="action-arrow">›</div>
+      <a href="deck-select.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-battle.svg" alt="">
+        <span>バトル</span>
       </a>
-    </div>
-
-    <!-- Ranking Preview -->
-    <div class="ranking-section animate-fadeIn" style="animation-delay: 0.4s;">
-      <div class="section-header">
-        <div class="section-title">🏆 ランキング</div>
-        <a href="#" class="see-all">すべて見る ›</a>
-      </div>
-
-      <div class="ranking-list">
-        <div class="rank-item">
-          <div class="rank-num rank-1">1</div>
-          <div class="rank-avatar">👑</div>
-          <div class="rank-info">
-            <div class="rank-name">魔王ユウキ</div>
-            <div class="rank-score">勝率 89% ・ 2,450pt</div>
-          </div>
-          <div class="rank-badge">Master</div>
-        </div>
-
-        <div class="rank-item">
-          <div class="rank-num rank-2">2</div>
-          <div class="rank-avatar">⚡</div>
-          <div class="rank-info">
-            <div class="rank-name">雷帝サクラ</div>
-            <div class="rank-score">勝率 85% ・ 2,310pt</div>
-          </div>
-          <div class="rank-badge">Master</div>
-        </div>
-
-        <div class="rank-item">
-          <div class="rank-num rank-3">3</div>
-          <div class="rank-avatar">🔥</div>
-          <div class="rank-info">
-            <div class="rank-name">炎龍レン</div>
-            <div class="rank-score">勝率 82% ・ 2,180pt</div>
-          </div>
-          <div class="rank-badge">Diamond</div>
-        </div>
-      </div>
-    </div>
+      <a href="shop.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-shop.svg" alt="">
+        <span>ショップ</span>
+      </a>
+      <a href="#" class="bottom-nav__item">
+        <img src="assets/icons/nav-settings.svg" alt="">
+        <span>設定</span>
+      </a>
+    </nav>
   </div>
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <a href="home.html" class="nav-item active">
-      <span class="nav-icon">🏠</span>
-      <span>ホーム</span>
-    </a>
-    <a href="deck-select.html" class="nav-item">
-      <span class="nav-icon">🃏</span>
-      <span>デッキ</span>
-    </a>
-    <a href="battle-start.html" class="nav-item">
-      <span class="nav-icon">⚔️</span>
-      <span>バトル</span>
-    </a>
-    <a href="#" class="nav-item">
-      <span class="nav-icon">🏪</span>
-      <span>ショップ</span>
-    </a>
-    <a href="#" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span>その他</span>
-    </a>
-  </div>
-</div>
-
-<!-- Page Navigation -->
-<nav class="page-nav">
-  <a href="home.html" class="active">ホーム</a>
-  <a href="deck-select.html">デッキ選択</a>
-  <a href="battle-start.html">バトル開始</a>
-  <a href="battle.html">バトル</a>
-</nav>
-
 </body>
 </html>

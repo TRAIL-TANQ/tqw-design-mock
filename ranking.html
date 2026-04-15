@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390, initial-scale=1.0">
+  <title>TRAIL QUEST WORLD - ランキング</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    /* ============================================
+       Ranking Screen
+       ============================================ */
+    .ranking-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .ranking-header__back {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .ranking-header__title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    /* My Rank Card */
+    .my-rank-card {
+      margin-top: 12px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+    }
+
+    .my-rank-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.05), transparent);
+      animation: btn-shimmer 5s ease-in-out infinite;
+    }
+
+    .my-rank-card__top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .my-rank-card__avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-dark);
+      background: linear-gradient(135deg, #2a2f4a, #1a1f3a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .my-rank-card__info { flex: 1; }
+
+    .my-rank-card__name {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .my-rank-card__title-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(197, 160, 63, 0.15));
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .my-rank-card__rank-num {
+      text-align: right;
+    }
+
+    .my-rank-card__rank-label {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      font-family: var(--font-display);
+    }
+
+    .my-rank-card__rank-value {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .my-rank-card__rank-suffix {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .my-rank-card__stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .my-rank-card__stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .my-rank-card__stat-label {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+    }
+
+    .my-rank-card__stat-value {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Category Tabs */
+    .ranking-tabs {
+      margin-top: 16px;
+    }
+
+    /* Top 3 Podium */
+    .ranking-podium {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .podium-card {
+      flex: 1;
+      padding: 14px 8px;
+      border-radius: var(--radius);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .podium-card--gold {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(197, 160, 63, 0.08));
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      order: 1;
+    }
+
+    .podium-card--silver {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(128, 128, 128, 0.06));
+      border: 1px solid rgba(192, 192, 192, 0.2);
+      order: 0;
+      margin-top: 12px;
+    }
+
+    .podium-card--bronze {
+      background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(139, 69, 19, 0.06));
+      border: 1px solid rgba(205, 127, 50, 0.2);
+      order: 2;
+      margin-top: 12px;
+    }
+
+    .podium-card__medal {
+      margin-bottom: 6px;
+    }
+
+    .podium-card__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a2f4a, #1a1f3a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin: 0 auto 6px;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .podium-card--gold .podium-card__avatar {
+      border-color: var(--gold-dark);
+      width: 48px;
+      height: 48px;
+    }
+
+    .podium-card__name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .podium-card__rate {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .podium-card--silver .podium-card__rate { color: #c0c0c0; }
+    .podium-card--bronze .podium-card__rate { color: #cd7f32; }
+
+    /* Ranking List (4th+) */
+    .ranking-list-section {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(26, 31, 58, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .rank-row--me {
+      background: rgba(255, 215, 0, 0.06);
+      border-color: rgba(255, 215, 0, 0.2);
+    }
+
+    .rank-row__num {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .rank-row--me .rank-row__num {
+      color: var(--gold);
+    }
+
+    .rank-row__avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a2f4a, #1a1f3a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .rank-row__info { flex: 1; min-width: 0; }
+
+    .rank-row__name {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .rank-row__title {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+
+    .rank-row__rate {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .rank-row--me .rank-row__rate {
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="home.html">Home</a>
+    <a href="deck-select.html">Deck</a>
+    <a href="deck-phase.html">Phase</a>
+    <a href="battle.html">Battle</a>
+    <a href="quest.html">Quest</a>
+    <a href="shop.html">Shop</a>
+    <a href="ranking.html" class="active">Rank</a>
+  </nav>
+
+  <div class="mobile-frame">
+    <div class="bg-layer" style="background: linear-gradient(180deg, #0a0e1a, #0f1428, #0a0e1a);"></div>
+
+    <div class="content">
+      <!-- Header -->
+      <div class="ranking-header animate-fadeInUp">
+        <a href="home.html" class="ranking-header__back">‹</a>
+        <div class="ranking-header__title">ランキング</div>
+      </div>
+
+      <!-- My Rank Card -->
+      <div class="my-rank-card glass-panel animate-fadeInUp delay-1">
+        <div class="my-rank-card__top">
+          <div class="my-rank-card__avatar">🧙</div>
+          <div class="my-rank-card__info">
+            <div class="my-rank-card__name">冒険者タロウ</div>
+            <div class="my-rank-card__title-badge">ゴールドランク III</div>
+          </div>
+          <div class="my-rank-card__rank-num">
+            <div class="my-rank-card__rank-label">RANK</div>
+            <div class="my-rank-card__rank-value">42<span class="my-rank-card__rank-suffix">位</span></div>
+          </div>
+        </div>
+        <div class="my-rank-card__stats">
+          <div class="my-rank-card__stat">
+            <span class="my-rank-card__stat-label">Eloレート</span>
+            <span class="my-rank-card__stat-value">1,520</span>
+          </div>
+          <div class="my-rank-card__stat">
+            <span class="my-rank-card__stat-label">勝率</span>
+            <span class="my-rank-card__stat-value">67%</span>
+          </div>
+          <div class="my-rank-card__stat">
+            <span class="my-rank-card__stat-label">対戦数</span>
+            <span class="my-rank-card__stat-value">156</span>
+          </div>
+          <div class="my-rank-card__stat">
+            <span class="my-rank-card__stat-label">連勝</span>
+            <span class="my-rank-card__stat-value">5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="tab-bar ranking-tabs animate-fadeInUp delay-2">
+        <span class="tab-item tab-item--active">総合</span>
+        <span class="tab-item">バトル</span>
+        <span class="tab-item">クエスト</span>
+        <span class="tab-item">コレクション</span>
+        <span class="tab-item">連勝</span>
+      </div>
+
+      <!-- Top 3 Podium -->
+      <div class="ranking-podium animate-fadeInUp delay-3">
+        <div class="podium-card podium-card--silver">
+          <div class="podium-card__medal">
+            <div class="medal medal--silver" style="margin: 0 auto;">2</div>
+          </div>
+          <div class="podium-card__avatar">⚔️</div>
+          <div class="podium-card__name">クイズ王</div>
+          <div class="podium-card__rate">2,050</div>
+        </div>
+
+        <div class="podium-card podium-card--gold">
+          <div class="podium-card__medal">
+            <div class="medal medal--gold" style="margin: 0 auto;">1</div>
+          </div>
+          <div class="podium-card__avatar">👑</div>
+          <div class="podium-card__name">マスター太郎</div>
+          <div class="podium-card__rate">2,180</div>
+        </div>
+
+        <div class="podium-card podium-card--bronze">
+          <div class="podium-card__medal">
+            <div class="medal medal--bronze" style="margin: 0 auto;">3</div>
+          </div>
+          <div class="podium-card__avatar">🎯</div>
+          <div class="podium-card__name">知識の探求者</div>
+          <div class="podium-card__rate">1,980</div>
+        </div>
+      </div>
+
+      <!-- Ranking List -->
+      <div class="ranking-list-section animate-fadeInUp delay-4">
+        <div class="rank-row">
+          <span class="rank-row__num">4</span>
+          <div class="rank-row__avatar">🔥</div>
+          <div class="rank-row__info">
+            <div class="rank-row__name">炎龍レン</div>
+            <div class="rank-row__title">ダイヤモンド I</div>
+          </div>
+          <span class="rank-row__rate">1,920</span>
+        </div>
+
+        <div class="rank-row">
+          <span class="rank-row__num">5</span>
+          <div class="rank-row__avatar">⚡</div>
+          <div class="rank-row__info">
+            <div class="rank-row__name">雷帝サクラ</div>
+            <div class="rank-row__title">ダイヤモンド I</div>
+          </div>
+          <span class="rank-row__rate">1,880</span>
+        </div>
+
+        <div class="rank-row">
+          <span class="rank-row__num">6</span>
+          <div class="rank-row__avatar">🌊</div>
+          <div class="rank-row__info">
+            <div class="rank-row__name">海王ミナト</div>
+            <div class="rank-row__title">プラチナ III</div>
+          </div>
+          <span class="rank-row__rate">1,810</span>
+        </div>
+
+        <div class="rank-row">
+          <span class="rank-row__num">7</span>
+          <div class="rank-row__avatar">🌸</div>
+          <div class="rank-row__info">
+            <div class="rank-row__name">桜姫ユイ</div>
+            <div class="rank-row__title">プラチナ II</div>
+          </div>
+          <span class="rank-row__rate">1,760</span>
+        </div>
+
+        <!-- Separator showing gap -->
+        <div style="text-align: center; padding: 4px; font-size: 0.65rem; color: var(--text-muted);">・・・</div>
+
+        <!-- My position highlighted -->
+        <div class="rank-row rank-row--me">
+          <span class="rank-row__num">42</span>
+          <div class="rank-row__avatar" style="border-color: var(--gold-dark);">🧙</div>
+          <div class="rank-row__info">
+            <div class="rank-row__name" style="color: var(--gold);">冒険者タロウ</div>
+            <div class="rank-row__title">ゴールド III</div>
+          </div>
+          <span class="rank-row__rate">1,520</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-home.svg" alt="">
+        <span>ホーム</span>
+      </a>
+      <a href="deck-select.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-battle.svg" alt="">
+        <span>バトル</span>
+      </a>
+      <a href="shop.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-shop.svg" alt="">
+        <span>ショップ</span>
+      </a>
+      <a href="#" class="bottom-nav__item">
+        <img src="assets/icons/nav-settings.svg" alt="">
+        <span>設定</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -6,51 +6,39 @@
   <title>TRAIL QUEST WORLD - デッキ選択</title>
   <link rel="stylesheet" href="css/common.css">
   <style>
-    body {
-      background: var(--bg-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
-
-    .mobile-frame {
-      background: var(--bg-dark);
-    }
-
-    /* Page Header */
-    .page-header {
+    /* ============================================
+       Deck Select Screen
+       ============================================ */
+    .deck-select-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding-bottom: 4px;
+      padding: 8px 0;
     }
 
-    .back-btn {
+    .deck-select-header__back {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(197, 160, 63, 0.3);
-      color: var(--gold);
-      font-size: 1.1rem;
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      color: var(--text-secondary);
       text-decoration: none;
-    }
-
-    .page-title {
       font-size: 1.1rem;
-      font-weight: 900;
-      color: var(--gold);
     }
 
-    .page-subtitle {
-      font-size: 0.65rem;
-      color: var(--text-gray);
+    .deck-select-header__title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .deck-select-header__subtitle {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
     }
 
     /* Deck Grid */
@@ -58,280 +46,244 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 12px;
+      margin-top: 16px;
       flex: 1;
-      overflow-y: auto;
-      padding-bottom: 100px;
+      align-content: start;
     }
 
-    /* Deck Card */
     .deck-card {
       position: relative;
-      border-radius: 16px;
       padding: 16px 12px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 40, 0.95));
+      border: 2px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      min-height: 180px;
-    }
-
-    .deck-card.unlocked {
-      background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 40, 0.95));
-      border: 2px solid rgba(255, 215, 0, 0.4);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.15);
-      animation: glow 3s ease-in-out infinite;
-    }
-
-    .deck-card.unlocked:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.3);
-    }
-
-    .deck-card.unlocked.selected {
-      border-color: var(--gold);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.5);
-    }
-
-    .deck-card.locked {
-      background: linear-gradient(135deg, rgba(30, 30, 40, 0.8), rgba(20, 20, 30, 0.9));
-      border: 2px solid rgba(100, 100, 120, 0.3);
-      filter: saturate(0.3);
-      opacity: 0.7;
-    }
-
-    .deck-icon {
-      font-size: 2.8rem;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
-    }
-
-    .deck-card.locked .deck-icon {
-      filter: grayscale(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
-    }
-
-    .deck-name {
-      font-size: 0.85rem;
-      font-weight: 900;
-      text-align: center;
-      color: var(--text-white);
-      letter-spacing: 0.05em;
-    }
-
-    .deck-card.locked .deck-name {
-      color: var(--text-gray);
-    }
-
-    .deck-rarity {
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 8px;
-      letter-spacing: 0.05em;
-    }
-
-    .rarity-n {
-      background: rgba(150, 150, 160, 0.2);
-      color: #aab;
-      border: 1px solid rgba(150, 150, 160, 0.3);
-    }
-
-    .rarity-r {
-      background: rgba(255, 215, 0, 0.1);
-      color: var(--gold);
-      border: 1px solid rgba(255, 215, 0, 0.3);
-    }
-
-    .rarity-sr {
-      background: rgba(123, 47, 190, 0.15);
-      color: #b87fff;
-      border: 1px solid rgba(123, 47, 190, 0.3);
-    }
-
-    .rarity-ssr {
-      background: linear-gradient(90deg, rgba(255, 100, 100, 0.15), rgba(100, 200, 255, 0.15));
-      color: #fff;
-      border: 1px solid rgba(255, 215, 0, 0.4);
-    }
-
-    .deck-cards-count {
-      font-size: 0.6rem;
-      color: var(--text-gray);
-    }
-
-    .lock-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2rem;
-      opacity: 0.6;
-    }
-
-    .lock-condition {
-      font-size: 0.55rem;
-      color: var(--text-gray);
-      text-align: center;
-      margin-top: auto;
-    }
-
-    /* Selected indicator */
-    .check-mark {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--gold);
-      color: #1a1000;
-      font-size: 0.8rem;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
-    }
-
-    /* Deploy Button */
-    .deploy-area {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 16px;
-      background: linear-gradient(180deg, transparent, rgba(10, 14, 26, 0.95) 30%);
-      z-index: 10;
-    }
-
-    .deploy-btn {
-      display: block;
-      width: 100%;
-      padding: 16px;
-      border: 2px solid var(--gold);
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ee2233 0%, #cc1122 50%, #991122 100%);
-      color: var(--gold-light);
-      font-family: inherit;
-      font-size: 1.2rem;
-      font-weight: 900;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
       overflow: hidden;
-      text-decoration: none;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      box-shadow: 0 4px 20px rgba(204, 17, 34, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
-      animation: pulse 2s ease-in-out infinite;
-      letter-spacing: 0.1em;
     }
 
-    .deploy-btn::after {
+    .deck-card:active { transform: scale(0.96); }
+
+    .deck-card--unlocked {
+      border-color: rgba(197, 160, 63, 0.3);
+    }
+
+    .deck-card--unlocked::after {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
-      width: 60%;
+      width: 50%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-      animation: shimmer 2.5s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.06), transparent);
+      animation: btn-shimmer 5s ease-in-out infinite;
     }
 
-    .deploy-btn:hover {
-      box-shadow: 0 6px 30px rgba(204, 17, 34, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+    .deck-card--selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.25);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    .deck-card--locked {
+      filter: grayscale(0.6);
+      opacity: 0.6;
+    }
+
+    .deck-card__icon {
+      font-size: 2.2rem;
+      margin-bottom: 4px;
+    }
+
+    .deck-card__name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .deck-card__count {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    .deck-card__rarity-bar {
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+
+    .deck-card__rarity-bar--gold {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    }
+
+    .deck-card__rarity-bar--silver {
+      background: linear-gradient(90deg, #808080, #c0c0c0, #808080);
+    }
+
+    .deck-card__rarity-bar--blue {
+      background: linear-gradient(90deg, #1a5276, #3498db, #1a5276);
+    }
+
+    .deck-card__lock {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      opacity: 0.7;
+    }
+
+    .deck-card__lock-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 26, 0.5);
+      backdrop-filter: blur(2px);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .deck-card__lock-overlay img {
+      width: 32px;
+      height: 32px;
+      opacity: 0.6;
+    }
+
+    /* Bottom Actions */
+    .deck-select-actions {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .deck-select-actions__link {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--gold);
+      text-decoration: none;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
+  <nav class="page-nav">
+    <a href="home.html">Home</a>
+    <a href="deck-select.html" class="active">Deck</a>
+    <a href="deck-phase.html">Phase</a>
+    <a href="battle.html">Battle</a>
+    <a href="quest.html">Quest</a>
+    <a href="shop.html">Shop</a>
+    <a href="ranking.html">Rank</a>
+  </nav>
 
-<div class="mobile-frame">
-  <img src="assets/images/bg-home.png" class="bg-image" alt="背景">
-  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(10,14,26,0.7) 0%, rgba(10,14,26,0.4) 30%, rgba(10,14,26,0.7) 70%, rgba(10,14,26,0.95) 100%);"></div>
+  <div class="mobile-frame">
+    <img src="assets/backgrounds/bg-home.png" alt="" class="bg-image">
+    <div class="bg-overlay"></div>
 
-  <div class="content">
-    <!-- Header -->
-    <div class="page-header animate-fadeIn">
-      <a href="home.html" class="back-btn">‹</a>
-      <div>
-        <div class="page-title">📖 デッキ選択</div>
-        <div class="page-subtitle">出撃するデッキを選んでください</div>
+    <div class="content">
+      <!-- Header -->
+      <div class="deck-select-header animate-fadeInUp">
+        <a href="home.html" class="deck-select-header__back">‹</a>
+        <div>
+          <div class="deck-select-header__title">デッキ選択</div>
+          <div class="deck-select-header__subtitle">バトルに使うデッキを選ぼう</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Deck Grid -->
+      <div class="deck-grid">
+        <!-- Deck 1: Selected -->
+        <div class="deck-card deck-card--unlocked deck-card--selected animate-fadeInUp delay-1">
+          <div class="deck-card__icon">🌍</div>
+          <div class="deck-card__name">世界地理</div>
+          <div class="deck-card__count">カード 30枚</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--gold"></div>
+        </div>
+
+        <!-- Deck 2 -->
+        <div class="deck-card deck-card--unlocked animate-fadeInUp delay-2">
+          <div class="deck-card__icon">🔬</div>
+          <div class="deck-card__name">科学探究</div>
+          <div class="deck-card__count">カード 28枚</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--blue"></div>
+        </div>
+
+        <!-- Deck 3 -->
+        <div class="deck-card deck-card--unlocked animate-fadeInUp delay-3">
+          <div class="deck-card__icon">📜</div>
+          <div class="deck-card__name">日本史</div>
+          <div class="deck-card__count">カード 32枚</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--gold"></div>
+        </div>
+
+        <!-- Deck 4 -->
+        <div class="deck-card deck-card--unlocked animate-fadeInUp delay-4">
+          <div class="deck-card__icon">🎨</div>
+          <div class="deck-card__name">芸術文化</div>
+          <div class="deck-card__count">カード 25枚</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--silver"></div>
+        </div>
+
+        <!-- Deck 5: Locked -->
+        <div class="deck-card deck-card--locked animate-fadeInUp delay-5">
+          <div class="deck-card__icon">💻</div>
+          <div class="deck-card__name">プログラミング</div>
+          <div class="deck-card__count">Lv.15で解放</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--silver"></div>
+          <div class="deck-card__lock-overlay">
+            <img src="assets/icons/icon-lock.png" alt="ロック">
+          </div>
+        </div>
+
+        <!-- Deck 6: Locked -->
+        <div class="deck-card deck-card--locked animate-fadeInUp delay-5">
+          <div class="deck-card__icon">🧮</div>
+          <div class="deck-card__name">数学チャレンジ</div>
+          <div class="deck-card__count">Lv.20で解放</div>
+          <div class="deck-card__rarity-bar deck-card__rarity-bar--silver"></div>
+          <div class="deck-card__lock-overlay">
+            <img src="assets/icons/icon-lock.png" alt="ロック">
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="deck-select-actions">
+        <a href="deck-phase.html" class="btn btn-battle btn-lg">出撃する</a>
+        <a href="quest.html" class="deck-select-actions__link">新しいデッキを手に入れる →</a>
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- Deck Grid -->
-    <div class="deck-grid">
-      <!-- Deck 1: Unlocked + Selected -->
-      <div class="deck-card unlocked selected animate-fadeIn" style="animation-delay: 0.1s;">
-        <div class="check-mark">✓</div>
-        <div class="deck-icon">🐉</div>
-        <div class="deck-name">竜炎の咆哮</div>
-        <div class="deck-rarity rarity-sr">SR</div>
-        <div class="deck-cards-count">20 / 20 カード</div>
-      </div>
-
-      <!-- Deck 2: Unlocked -->
-      <div class="deck-card unlocked animate-fadeIn" style="animation-delay: 0.15s;">
-        <div class="deck-icon">⚡</div>
-        <div class="deck-name">雷神の裁き</div>
-        <div class="deck-rarity rarity-r">R</div>
-        <div class="deck-cards-count">20 / 20 カード</div>
-      </div>
-
-      <!-- Deck 3: Unlocked -->
-      <div class="deck-card unlocked animate-fadeIn" style="animation-delay: 0.2s;">
-        <div class="deck-icon">🌊</div>
-        <div class="deck-name">深海の支配者</div>
-        <div class="deck-rarity rarity-r">R</div>
-        <div class="deck-cards-count">18 / 20 カード</div>
-      </div>
-
-      <!-- Deck 4: Unlocked -->
-      <div class="deck-card unlocked animate-fadeIn" style="animation-delay: 0.25s;">
-        <div class="deck-icon">🌿</div>
-        <div class="deck-name">森の守護者</div>
-        <div class="deck-rarity rarity-n">N</div>
-        <div class="deck-cards-count">20 / 20 カード</div>
-      </div>
-
-      <!-- Deck 5: Locked -->
-      <div class="deck-card locked animate-fadeIn" style="animation-delay: 0.3s;">
-        <div class="deck-icon">💀</div>
-        <div class="deck-name">冥界の門</div>
-        <div class="deck-rarity rarity-ssr">SSR</div>
-        <div class="lock-overlay">🔒</div>
-        <div class="lock-condition">Lv.50で解放</div>
-      </div>
-
-      <!-- Deck 6: Locked -->
-      <div class="deck-card locked animate-fadeIn" style="animation-delay: 0.35s;">
-        <div class="deck-icon">✨</div>
-        <div class="deck-name">聖光の騎士団</div>
-        <div class="deck-rarity rarity-ssr">SSR</div>
-        <div class="lock-overlay">🔒</div>
-        <div class="lock-condition">ストーリークリアで解放</div>
-      </div>
-    </div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-home.svg" alt="">
+        <span>ホーム</span>
+      </a>
+      <a href="deck-select.html" class="bottom-nav__item bottom-nav__item--active">
+        <img src="assets/icons/nav-battle.svg" alt="">
+        <span>バトル</span>
+      </a>
+      <a href="shop.html" class="bottom-nav__item">
+        <img src="assets/icons/nav-shop.svg" alt="">
+        <span>ショップ</span>
+      </a>
+      <a href="#" class="bottom-nav__item">
+        <img src="assets/icons/nav-settings.svg" alt="">
+        <span>設定</span>
+      </a>
+    </nav>
   </div>
-
-  <!-- Deploy Button -->
-  <div class="deploy-area">
-    <a href="battle-start.html" class="deploy-btn">
-      ⚔️ 出撃する
-    </a>
-  </div>
-</div>
-
-<!-- Page Navigation -->
-<nav class="page-nav">
-  <a href="home.html">ホーム</a>
-  <a href="deck-select.html" class="active">デッキ選択</a>
-  <a href="battle-start.html">バトル開始</a>
-  <a href="battle.html">バトル</a>
-</nav>
-
 </body>
 </html>
