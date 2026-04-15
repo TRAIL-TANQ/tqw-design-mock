@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390, initial-scale=1.0">
+  <title>TRAIL QUEST WORLD - バトル</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    body {
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .mobile-frame {
+      background: #050810;
+    }
+
+    .bg-overlay {
+      background: linear-gradient(
+        180deg,
+        rgba(5, 8, 16, 0.4) 0%,
+        rgba(5, 8, 16, 0.2) 20%,
+        rgba(5, 8, 16, 0.1) 50%,
+        rgba(5, 8, 16, 0.2) 80%,
+        rgba(5, 8, 16, 0.5) 100%
+      );
+    }
+
+    .content {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* === HUD === */
+    .hud {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 0.6rem;
+      color: var(--text-gray);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hud-item .hud-label {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .hud-item .hud-value {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* Turn indicator */
+    .turn-indicator {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      color: var(--gold);
+      font-weight: 700;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    /* === Opponent Field (Top) === */
+    .opponent-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 12px 8px;
+      position: relative;
+    }
+
+    .opponent-info {
+      position: absolute;
+      top: 36px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .opponent-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3a2040, #2a1030);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      border: 1px solid rgba(200, 100, 100, 0.3);
+    }
+
+    .opponent-name {
+      font-size: 0.65rem;
+      color: #ff8888;
+      font-weight: 700;
+    }
+
+    /* Card Slots */
+    .card-slots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-slot {
+      width: 60px;
+      height: 84px;
+      border-radius: 8px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .card-slot.has-card {
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(15, 20, 40, 0.9));
+      border: 1.5px solid rgba(197, 160, 63, 0.3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    .card-slot.has-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+
+    .card-slot.empty {
+      border: 1.5px dashed rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .card-slot.opponent-card {
+      background: linear-gradient(135deg, rgba(60, 20, 30, 0.8), rgba(40, 15, 25, 0.9));
+      border: 1.5px solid rgba(200, 100, 100, 0.3);
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 4px;
+    }
+
+    .card-emoji {
+      font-size: 1.4rem;
+    }
+
+    .card-atk-hp {
+      display: flex;
+      gap: 6px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .card-atk {
+      color: #ff6666;
+    }
+
+    .card-hp {
+      color: #66cc66;
+    }
+
+    .card-name-mini {
+      font-size: 0.45rem;
+      color: var(--text-gray);
+      margin-top: 2px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* Rarity border colors */
+    .card-slot.rarity-r {
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+
+    .card-slot.rarity-sr {
+      border-color: rgba(160, 80, 255, 0.5);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 8px rgba(160, 80, 255, 0.2);
+    }
+
+    .card-slot.rarity-ssr {
+      border-image: linear-gradient(135deg, #ff6666, #ffcc00, #66ff66, #6666ff, #ff66ff) 1;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 215, 0, 0.3);
+    }
+
+    /* === Flag Zone (Center) === */
+    .flag-zone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .flag-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .flag-score {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flag-count {
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .flag-count.my-flags {
+      color: #66aaff;
+    }
+
+    .flag-count.opp-flags {
+      color: #ff6666;
+    }
+
+    .flag-label {
+      font-size: 0.55rem;
+      color: var(--text-gray);
+    }
+
+    .flag-vs {
+      font-size: 0.7rem;
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .flag-icon {
+      font-size: 0.8rem;
+    }
+
+    /* === My Field (Bottom) === */
+    .my-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px 70px;
+      position: relative;
+    }
+
+    .my-info {
+      position: absolute;
+      bottom: 74px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .my-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #203060, #102040);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      border: 1px solid rgba(100, 170, 255, 0.3);
+    }
+
+    .my-name {
+      font-size: 0.65rem;
+      color: #88bbff;
+      font-weight: 700;
+    }
+
+    /* Hand area */
+    .hand-area {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 8px 12px;
+      background: linear-gradient(180deg, transparent, rgba(5, 8, 16, 0.9));
+      z-index: 10;
+    }
+
+    .hand-card {
+      width: 48px;
+      height: 67px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 40, 0.95));
+      border: 1px solid rgba(197, 160, 63, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .hand-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.2);
+      border-color: var(--gold);
+      z-index: 11;
+    }
+
+    .hand-card .card-emoji {
+      font-size: 1.1rem;
+    }
+
+    .hand-card .card-atk-hp {
+      font-size: 0.4rem;
+    }
+
+    /* Turn End Button */
+    .turn-end-btn {
+      position: absolute;
+      bottom: 80px;
+      right: 12px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: 2px solid var(--gold-light);
+      color: #1a1000;
+      font-family: inherit;
+      font-size: 0.55rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+      z-index: 20;
+      transition: all 0.2s ease;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .turn-end-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 24px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Center line */
+    .center-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-frame">
+  <img src="assets/images/bg-battle.png" class="bg-image" alt="バトル背景">
+  <div class="bg-overlay"></div>
+  <div class="center-line"></div>
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-item">
+      <span class="hud-label">デッキ</span>
+      <span class="hud-value">12</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">ベンチ</span>
+      <span class="hud-value">3</span>
+    </div>
+  </div>
+
+  <!-- Turn Indicator -->
+  <div class="turn-indicator">
+    Turn 4 ・ あなたのターン
+  </div>
+
+  <div class="content">
+    <!-- Opponent Field -->
+    <div class="opponent-field">
+      <div class="opponent-info">
+        <div class="opponent-avatar">👿</div>
+        <div class="opponent-name">魔王ユウキ</div>
+      </div>
+
+      <div class="card-slots">
+        <div class="card-slot opponent-card has-card">
+          <div class="card-content">
+            <div class="card-emoji">🦇</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 3</span>
+              <span class="card-hp">HP 4</span>
+            </div>
+            <div class="card-name-mini">ダークバット</div>
+          </div>
+        </div>
+        <div class="card-slot opponent-card has-card rarity-r">
+          <div class="card-content">
+            <div class="card-emoji">🐺</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 5</span>
+              <span class="card-hp">HP 3</span>
+            </div>
+            <div class="card-name-mini">シャドウウルフ</div>
+          </div>
+        </div>
+        <div class="card-slot opponent-card has-card rarity-sr">
+          <div class="card-content">
+            <div class="card-emoji">💀</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 7</span>
+              <span class="card-hp">HP 6</span>
+            </div>
+            <div class="card-name-mini">デスナイト</div>
+          </div>
+        </div>
+        <div class="card-slot empty"></div>
+        <div class="card-slot empty"></div>
+      </div>
+    </div>
+
+    <!-- Flag Zone -->
+    <div class="flag-zone">
+      <div class="flag-container">
+        <div class="flag-score">
+          <span class="flag-icon">🔵</span>
+          <span class="flag-count my-flags">2</span>
+          <span class="flag-label">YOU</span>
+        </div>
+        <div class="flag-vs">🚩</div>
+        <div class="flag-score">
+          <span class="flag-label">OPP</span>
+          <span class="flag-count opp-flags">1</span>
+          <span class="flag-icon">🔴</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Field -->
+    <div class="my-field">
+      <div class="card-slots">
+        <div class="card-slot has-card">
+          <div class="card-content">
+            <div class="card-emoji">🛡️</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 2</span>
+              <span class="card-hp">HP 6</span>
+            </div>
+            <div class="card-name-mini">鉄壁の守護者</div>
+          </div>
+        </div>
+        <div class="card-slot has-card rarity-r">
+          <div class="card-content">
+            <div class="card-emoji">🐉</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 6</span>
+              <span class="card-hp">HP 5</span>
+            </div>
+            <div class="card-name-mini">炎竜ドレイク</div>
+          </div>
+        </div>
+        <div class="card-slot has-card rarity-sr">
+          <div class="card-content">
+            <div class="card-emoji">⚔️</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 8</span>
+              <span class="card-hp">HP 4</span>
+            </div>
+            <div class="card-name-mini">聖剣の勇者</div>
+          </div>
+        </div>
+        <div class="card-slot has-card">
+          <div class="card-content">
+            <div class="card-emoji">🧙</div>
+            <div class="card-atk-hp">
+              <span class="card-atk">ATK 4</span>
+              <span class="card-hp">HP 3</span>
+            </div>
+            <div class="card-name-mini">賢者マーリン</div>
+          </div>
+        </div>
+        <div class="card-slot empty"></div>
+      </div>
+
+      <div class="my-info">
+        <div class="my-avatar">🐉</div>
+        <div class="my-name">竜騎士タクミ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hand -->
+  <div class="hand-area">
+    <div class="hand-card">
+      <div class="card-emoji">🏹</div>
+      <div class="card-atk-hp">
+        <span class="card-atk">3</span>
+        <span class="card-hp">2</span>
+      </div>
+    </div>
+    <div class="hand-card">
+      <div class="card-emoji">🔮</div>
+      <div class="card-atk-hp">
+        <span class="card-atk">4</span>
+        <span class="card-hp">3</span>
+      </div>
+    </div>
+    <div class="hand-card">
+      <div class="card-emoji">🌟</div>
+      <div class="card-atk-hp">
+        <span class="card-atk">5</span>
+        <span class="card-hp">5</span>
+      </div>
+    </div>
+    <div class="hand-card">
+      <div class="card-emoji">🗡️</div>
+      <div class="card-atk-hp">
+        <span class="card-atk">6</span>
+        <span class="card-hp">2</span>
+      </div>
+    </div>
+    <div class="hand-card">
+      <div class="card-emoji">💎</div>
+      <div class="card-atk-hp">
+        <span class="card-atk">2</span>
+        <span class="card-hp">7</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Turn End Button -->
+  <button class="turn-end-btn">ターン<br>終了</button>
+</div>
+
+<!-- Page Navigation -->
+<nav class="page-nav">
+  <a href="home.html">ホーム</a>
+  <a href="deck-select.html">デッキ選択</a>
+  <a href="battle-start.html">バトル開始</a>
+  <a href="battle.html" class="active">バトル</a>
+</nav>
+
+</body>
+</html>

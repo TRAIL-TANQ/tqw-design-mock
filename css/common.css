@@ -1,0 +1,291 @@
+/* ============================================
+   TRAIL QUEST WORLD - Common Styles
+   ============================================ */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
+
+/* CSS Variables */
+:root {
+  --bg-dark: #0a0e1a;
+  --bg-mid: #0f1428;
+  --bg-light: #1a1f3a;
+  --gold: #ffd700;
+  --gold-dark: #c5a03f;
+  --gold-light: #ffe066;
+  --red: #cc2233;
+  --red-dark: #8b1122;
+  --red-light: #ff4455;
+  --purple: #7b2fbe;
+  --text-white: #f0ece0;
+  --text-gray: #8a8fa8;
+  --text-gold: #ffd700;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  --btn-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.15);
+  --glow-gold: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile Frame Container */
+.mobile-frame {
+  width: 390px;
+  height: 844px;
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 2px solid rgba(197, 160, 63, 0.3);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+/* Background Image */
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 14, 26, 0.3) 0%,
+    rgba(10, 14, 26, 0.1) 30%,
+    rgba(10, 14, 26, 0.5) 70%,
+    rgba(10, 14, 26, 0.85) 100%
+  );
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+/* Typography */
+.title-game {
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 40%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: var(--text-gray);
+  letter-spacing: 0.1em;
+}
+
+/* Gold Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
+  margin: 12px 0;
+  opacity: 0.5;
+}
+
+/* Buttons */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::after {
+  left: 100%;
+}
+
+.btn-battle {
+  background: linear-gradient(180deg, #ee3344 0%, #cc1122 50%, #991122 100%);
+  color: var(--gold-light);
+  border: 2px solid var(--gold-dark);
+  box-shadow: var(--btn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.btn-battle:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-shadow), 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+.btn-quest {
+  background: linear-gradient(180deg, #2244aa 0%, #1a3388 50%, #112266 100%);
+  color: var(--gold-light);
+  border: 2px solid var(--gold-dark);
+  box-shadow: var(--btn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.btn-quest:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-shadow), 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+.btn-gold {
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  color: #1a1000;
+  border: 2px solid var(--gold);
+  box-shadow: var(--btn-shadow);
+  text-shadow: none;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+/* Card Style */
+.card-panel {
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 40, 0.95));
+  border: 1px solid rgba(197, 160, 63, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(10px);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Navigation between pages */
+.page-nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+  background: rgba(10, 14, 26, 0.9);
+  padding: 8px 16px;
+  border-radius: 30px;
+  border: 1px solid rgba(197, 160, 63, 0.3);
+}
+
+.page-nav a {
+  color: var(--text-gray);
+  text-decoration: none;
+  font-size: 0.7rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+.page-nav a:hover,
+.page-nav a.active {
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 2px;
+}
